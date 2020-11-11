@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>注册</title>
+        <link rel="stylesheet" type="text/css" href="css/common.css">
+        <link rel="stylesheet" href="css/register.css">
+		<!--导入jquery-->
+		<script src="js/jquery-3.3.1.js"></script>
+		<script>
+			//Verify form
+			$(function () {
+				/**
+				 * username: anything, 8-20
+				 */
+				function checkUsername() {
+					//1.acquire the value of username
+					var username = $("#username").val();
+					//2.define reg
+					var reg_username=/^\w{8,20}$/;
+					//3.judge, give info
+					var flag = reg_username.test(username);
+					if(flag){
+						//pass verification
+						$("#username").css("border","");
+					}else{
+						//fail verification
+						$("#username").css("border","1px solid red");
+
+					}
+					return flag;
+				}
+				/**
+				 * password: anything, 8-20
+				 */
+				function checkPassword() {
+					//1.acquire the value of password
+					var password = $("#password").val();
+					//2.define reg
+					var reg_password=/^\w{8,20}$/;
+					//3.judge, give info
+					var flag = reg_password.test(password);
+					if(flag){
+						//pass verification
+						$("#password").css("border","");
+					}else{
+						//fail verification
+						$("#password").css("border","1px solid red");
+
+					}
+					return flag;
+				}
+
+				/**
+				 * email:reg
+				*/
+				function checkEmail(){
+					//1.acquire email value;
+					var email = $("#email").val();
+					//2.define reg
+					var reg_email = /^\w+@\w+\.\w+$/;
+					//3.judge
+					var flag = reg_email.test(email);
+					if(flag){
+						//pass verification
+						$("#email").css("border","");
+					}else{
+						//fail verification
+						$("#email").css("border","1px solid red");
+					}
+
+					return flag;
+				}
+
+				/**
+				 * name:not null
+				 */
+				function checkName(){
+					//1.acquire name value;
+					var name = $("#name").val();
+					//2.judge, name not null
+					var flag = false;
+					if(name.trim()==""){
+						//fail verification
+						$("#name").css("border","1px solid red");
+					}else{
+						//pass verification
+						flag=true;
+						$("#name").css("border","");
+					}
+					return flag;
+				}
+				/**
+				 * cellphone: 10 digits
+				 */
+				function checkCellphone(){
+					//1.acquire cellphone value;
+					var cellphone = $("#telephone").val();
+					//2.define reg
+					var reg_cellphone=/^[0-9]{10}$/;
+					//3.judge
+					var flag = reg_cellphone.test(cellphone);
+					if(flag){
+						//pass verification
+						$("#telephone").css("border","");
+					}else{
+						//fail verification
+						$("#telephone").css("border","1px solid red");
+					}
+
+					return flag;
+				}
+
+				/**
+				 * birthday: not null
+				 */
+				function checkBirthday(){
+					//1.acquire birthday;
+					var birthday = $("#birthday").val();
+					//2.judge
+					if(birthday==""){
+						alert(birthday);
+						//fail verification
+						$("#birthday").css("border","1px solid red");
+						return false;
+					}else{
+						//pass verification
+						$("#birthday").css("border","");
+						return true;
+					}
+				}
+
+				/**
+				 * check code: not null
+				 */
+				function checkCode(){
+					//1.acquire code value;
+					var code = $("#check").val();
+					//2.judge
+					if(code.trim()==""){
+						//fail verification
+						$("#check").css("border","1px solid red");
+						return false
+					}else{
+						//pass verification
+						$("#check").css("border","");
+						return true;
+					}
+				}
+				/**
+				 * when submit form, verify all fields
+				*/
+				$("#registerForm").submit(function () {
+					//1.send data to server;
+					if(checkUsername() && checkPassword() && checkEmail() && checkName() && checkCellphone() && checkBirthday() && checkCode()){
+
+						$.post("user/register", $(this).serialize(), function (res) {
+							//deal with data
+							// alert(res);
+							// alert(res.flag);
+							// alert(res.errorMsg);
+
+							if(res["flag"]){
+								//true, pass registration, go to success page
+								// alert("data.flag  "+res["flag"]);
+								alert("jinlaile!");
+								window.location="register_ok.html";
+							}else{
+								//false, fail registration, add info to error_msg
+								// alert("data.errorMsg  "+res["errorMsg"]);
+								$("#error_msg").html(res["errorMsg"]);
+							}
+						}, "json");
+					}
+					//2. jump page
+
+					//if theres no return, or return true, submit successfully; otherwise, submission not allowed
+					return false;
+				})
+
+				/**
+				 * when lose focus, call the according function
+				 */
+				$("#username").blur(checkUsername);
+				$("#password").blur(checkPassword);
+				$("#email").blur(checkEmail);
+				$("#name").blur(checkName);
+				$("#telephone").blur(checkCellphone);
+				$("#birthday").blur(checkBirthday);
+				$("#check").blur(checkCode);
+			})
+		</script>
+    </head>
+	<body>
+	<!--引入头部-->
+	<div id="header"></div>
+        <!-- 头部 end -->
+    	<div class="rg_layout">
+    		<div class="rg_form clearfix">
+    			<div class="rg_form_left">
+    				<p>New User Registration</p>
+    				<p>USER REGISTER</p>
+    			</div>
+    			<div class="rg_form_center">
+
+					<div id="error_msg" style="color: red; font-family: Arial; height: 14px; line-height: 16px; font-size: 16px; padding-top: 10px; text-align: center" align="center"></div>
+					<!--注册表单-->
+    				<form id="registerForm" action="user" method="get">
+						<!--提交处理请求的标识符-->
+						<input type="hidden" name="action" value="register">
+    					<table style="margin-top: 25px;">
+    						<tr>
+    							<td class="td_left">
+    								<label for="username">Username</label>
+    							</td>
+    							<td class="td_right">
+    								<input type="text" id="username" name="username" placeholder="Please enter 8-20 length as your username">
+    							</td>
+    						</tr>
+    						<tr>
+    							<td class="td_left">
+    								<label for="password">Password</label>
+    							</td>
+    							<td class="td_right">
+    								<input type="text" id="password" name="password" placeholder="Please enter 8-20 length as your password">
+    							</td>
+    						</tr>
+    						<tr>
+    							<td class="td_left">
+    								<label for="email">Email</label>
+    							</td>
+    							<td class="td_right">
+    								<input type="text" id="email" name="email" placeholder="Please enter your email">
+    							</td>
+    						</tr>
+    						<tr>
+    							<td class="td_left">
+    								<label for="name">Name</label>
+    							</td>
+    							<td class="td_right">
+    								<input type="text" id="name" name="name" placeholder="Please enter your real name">
+    							</td>
+    						</tr>
+    						<tr>
+    							<td class="td_left">
+    								<label for="telephone">Cellphone</label>
+    							</td>
+    							<td class="td_right">
+    								<input type="text" id="telephone" name="telephone" placeholder="Please enter your cellphone number">
+    							</td>
+    						</tr>
+    						<tr>
+    							<td class="td_left">
+    								<label for="sex">Gender</label>
+    							</td>
+    							<td class="td_right gender">
+    								<input type="radio" id="sex" name="sex" value="M" checked> Male
+    								<input type="radio" name="sex" value="F"> Female
+    							</td>
+    						</tr>
+    						<tr>
+    							<td class="td_left">
+    								<label for="birthday">Birthday</label>
+    							</td>
+    							<td class="td_right">
+    								<input type="date" id="birthday" name="birthday" placeholder="Y/M/D">
+    							</td>
+    						</tr>
+    						<tr>
+    							<td class="td_left">
+    								<label for="check">Code</label>
+    							</td>
+    							<td class="td_right check">
+    								<input type="text" id="check" name="check" class="check">
+    								<img src="checkCode" height="32px" alt="" onclick="changeCheckCode(this)">
+									<script type="text/javascript">
+										//图片点击事件
+										function changeCheckCode(img) {
+											img.src="checkCode?"+new Date().getTime();
+                                        }
+									</script>
+    							</td>
+    						</tr>
+    						<tr>
+    							<td class="td_left"> 
+    							</td>
+    							<td class="td_right check"> 
+    								<input type="submit" class="submit" value="注册">
+									<span id="msg" style="color: red;"></span>
+    							</td>
+    						</tr>
+    					</table>
+    				</form>
+    			</div>
+    			<div class="rg_form_right">
+    				<p>
+    					已有账号？
+    					<a href="#">立即登录</a>
+    				</p>
+    			</div>
+    		</div>
+    	</div>
+        <!--引入尾部-->
+    	<div id="footer"></div>
+		<!--导入布局js，共享header和footer-->
+		<script type="text/javascript" src="js/include.js"></script>
+    	
+    </body>
+</html>

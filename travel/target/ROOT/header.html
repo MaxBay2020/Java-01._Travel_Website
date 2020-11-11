@@ -1,0 +1,101 @@
+<script src="js/getParameter.js"></script>
+<script>
+    $(function () {
+        /**
+         * send ajax to get user info
+         */
+        $.get("user/findOne", {}, function (data) {
+            //data: {uid: 1, username: xxx,.....}
+            var msg = "welcome, " + data.username;
+            $("#span_username").html(msg);
+            $("#loginLink").remove();
+            $("#signupLink").remove();
+        })
+
+        /**
+         * send ajax to get categoru
+         */
+        $.get("category/findAll", {}, function (data) {
+            //data [{cid:1, cname:global},{...},{...},...]
+            var lis = '<li class="nav-active"><a href="index.html">Home</a></li>';
+            //loop data
+            for (let item of data) {
+                lis+='<li><a href="route_list.html?cid='+item.cid+'&rname=">'+item.cname+'</a></li>';
+            }
+            //concat string
+
+            //concat Favorites
+            lis+='<li><a href="favoriterank.html">Favorites</a></li>';
+
+            //insert lis into <ul></ul>
+            $("#category").html(lis);
+        })
+
+        //bind search button click event, get value of search input
+        $("#search_btn").click(function () {
+            //name of route
+            var rname = $("#search_input").val();
+            var cid = getParameter("cid");
+            //go to url: http://localhost:8080/travel/route_list.html?cid=5&rname=xxx;
+            // window.location.href = "http://localhost:8080/travel/route_list.html?cid="+cid+"&rname="+rname;
+            window.location.href = "route_list.html?cid="+cid+"&rname="+rname;
+        })
+    })
+</script>
+
+<!-- 头部 start -->
+<header id="header">
+    <div class="top_banner">
+        <img src="images/top_banner.jpg" alt="" width="100%">
+    </div>
+    <div class="shortcut">
+        <!-- 未登录状态  -->
+        <div class="login_out">
+            <a href="login.html" id="loginLink">Login</a>
+            <a href="register.html" id="signupLink">Sign up</a>
+        </div>
+        <!-- 登录状态  -->
+        <div class="login">
+
+            <span id="span_username"></span>
+            <a href="myfavorite.html" class="collection">Favorites</a>
+            <a href="user/exit">Exit</a>
+        </div>
+    </div>
+    <div class="header_wrap">
+        <div class="topbar">
+            <div class="logo">
+                <a href="/"><img src="images/logo.jpg" alt=""></a>
+            </div>
+            <div class="search">
+                <input id="search_input" name="" type="text" placeholder="Enter route name" class="search_input" autocomplete="off">
+                <a href="javascript:;" class="search-button" id="search_btn">Search</a>
+            </div>
+            <div class="hottel">
+                <div class="hot_pic">
+                    <img src="images/hot_tel.jpg" alt="">
+                </div>
+                <div class="hot_tel">
+                    <p class="hot_time">Hot Line(9:00-6:00)</p>
+                    <p class="hot_num">400-618-9090</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+<!-- 头部 end -->
+<!-- 首页导航 -->
+<div class="navitem">
+    <ul class="nav" id="category">
+<!--        <li class="nav-active"><a href="index.html">首页</a></li>-->
+<!--        <li><a href="route_list.html">门票</a></li>-->
+<!--        <li><a href="route_list.html">酒店</a></li>-->
+<!--        <li><a href="route_list.html">香港车票</a></li>-->
+<!--        <li><a href="route_list.html">出境游</a></li>-->
+<!--        <li><a href="route_list.html">国内游</a></li>-->
+<!--        <li><a href="route_list.html">港澳游</a></li>-->
+<!--        <li><a href="route_list.html">抱团定制</a></li>-->
+<!--        <li><a href="route_list.html">全球自由行</a></li>-->
+<!--        <li><a href="favoriterank.html">收藏排行榜</a></li>-->
+    </ul>
+</div>
